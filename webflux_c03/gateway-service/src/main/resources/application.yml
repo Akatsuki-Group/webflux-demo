@@ -1,0 +1,49 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: reactive-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: reative-stock-service
+          uri: lb://reative-stock-service
+          predicates:
+            - Path=/stock/**
+        - id: reative-product-service
+          uri: lb://reative-product-service
+          predicates:
+            - Path=/route/product/**
+
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        cluster-name: bole #集群名称
+        metadata:
+          version: v1.0
+
+#    loadbalancer:
+#      ribbon:
+#        enabled: false
+
+
+management: #开启SpringBoot Admin的监控
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+logging:
+  level:
+    org.springframework.cloud.gateway: debug
+
+luban:
+  gateway:
+    shouldSkipUrls:
+      - /oauth/**
+      - /sso/**
